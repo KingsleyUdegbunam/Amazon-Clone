@@ -80,6 +80,14 @@ document.querySelectorAll(".js-add-to-cart-button").forEach((button) => {
       cart.push(product);
     }
 
-    console.log(cart);
+    //Accumulator to hold the total number of quantity in cart.
+    let cartQuantity = 0;
+    const cartQuantityElem = document.querySelector(".js-cart-quantity");
+
+    cart.forEach((item) => {
+      cartQuantity += item.quantity;
+    });
+
+    cartQuantityElem.innerHTML = cartQuantity;
   });
 });
