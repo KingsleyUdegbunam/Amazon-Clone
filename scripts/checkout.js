@@ -1,4 +1,4 @@
-import { cart } from "../data/cart.js";
+import { cart, removeItemFromCart } from "../data/cart.js";
 import { products } from "../data/products.js";
 import { formatCurrency } from "./utils/money.js";
 
@@ -6,14 +6,15 @@ const productSummaryContainer = document.querySelector(".js-order-summary");
 
 //products.forEach((product, index) => {});
 
-let cartSummaryHTML = "";
+function renderCheckout() {
+  let cartSummaryHTML = "";
 
-cart.forEach((cartItem) => {
-  let matchingitem;
-  products.forEach((product) => {
-    if (cartItem.productId === product.id) {
-      matchingitem = product;
-      const html = `
+  cart.forEach((cartItem) => {
+    let matchingitem;
+    products.forEach((product) => {
+      if (cartItem.productId === product.id) {
+        matchingitem = product;
+        const html = `
       <div class="cart-item-container">
           <div class="delivery-date">
             Delivery date: Tuesday, June 21
@@ -38,7 +39,9 @@ cart.forEach((cartItem) => {
                 <span class="update-quantity-link link-primary">
                   Update
                 </span>
-                <span class="delete-quantity-link link-primary">
+                <span class="delete-quantity-link js-delete-quantity-link link-primary" data-product-id = '${
+                  matchingitem.id
+                }'>
                   Delete
                 </span>
               </div>
@@ -76,7 +79,7 @@ cart.forEach((cartItem) => {
               </div>
               <div class="delivery-option">
                 <input type="radio" class="delivery-option-input" name="delivery-option-${
-                  matchingitem.id
+                  product.id
                 }">
                 <div>
                   <div class="delivery-option-date">
@@ -92,9 +95,20 @@ cart.forEach((cartItem) => {
         </div>
       `;
 
-      cartSummaryHTML += html;
-    }
+        cartSummaryHTML += html;
+      }
+    });
+  });
+
+  productSummaryContainer.innerHTML = cartSummaryHTML;
+}
+
+renderCheckout();
+
+document.querySelectorAll(".js-delete-quantity-link").forEach((button) => {
+  button.addEventListener("click", () => {
+    const productId = button.dataset.productId;
+
+    removeItemFromCart(productId);
   });
 });
-
-productSummaryContainer.innerHTML = cartSummaryHTML;
