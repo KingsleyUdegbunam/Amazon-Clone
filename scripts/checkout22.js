@@ -12,15 +12,23 @@ const productSummaryContainer = document.querySelector(".js-order-summary");
 function renderCheckout() {
   let cartSummaryHTML = "";
 
+  function setDate(days) {
+    const today = dayjs();
+
+    const set = today.add(days, "day");
+    return set.format("dddd, MMMM D");
+  }
+
   cart.forEach((cartItem) => {
     let matchingitem;
     products.forEach((product) => {
       if (cartItem.productId === product.id) {
         matchingitem = product;
+
         const html = `
       <div class="cart-item-container js-cart-item-container-${product.id}">
-          <div class="delivery-date">
-            Delivery date: Tuesday, June 21
+          <div class="delivery-date js-delivery-date-${matchingitem.id}">
+            Delivery date: ${setDate(7)}
           </div>
 
           <div class="cart-item-details-grid">
@@ -35,11 +43,13 @@ function renderCheckout() {
               </div>
               <div class="product-quantity">
                 <span>
-                  Quantity: <span class="quantity-label">${
-                    cartItem.quantity
-                  }</span>
+                  Quantity: <span class="quantity-label js-quantity-label-${
+                    matchingitem.id
+                  }">${cartItem.quantity}</span>
                 </span>
-                <span class="update-quantity-link link-primary">
+                <span class="update-quantity-link link-primary js-update-quantity" data-product-id = '${
+                  matchingitem.id
+                }'>
                   Update
                 </span>
                 <span class="delete-quantity-link js-delete-quantity-link link-primary" data-product-id = '${
@@ -55,12 +65,16 @@ function renderCheckout() {
                 Choose a delivery option:
               </div>
               <div class="delivery-option">
-                <input type="radio" checked class="delivery-option-input" name="delivery-option-${
+                <input type="radio" checked data-product-id='${
                   matchingitem.id
-                }">
+                }' class="delivery-option-input js-delivery-option-input" data-shipping-id='free-${
+          matchingitem.id
+        }' name="delivery-option-${matchingitem.id}">
                 <div>
-                  <div class="delivery-option-date">
-                    Tuesday, June 21
+                  <div class="delivery-option-date delivery-option-date-free-${
+                    matchingitem.id
+                  }" >
+                    ${setDate(7)}
                   </div>
                   <div class="delivery-option-price">
                     FREE Shipping
@@ -69,12 +83,16 @@ function renderCheckout() {
               </div>
 
               <div class="delivery-option">
-                <input type="radio" class="delivery-option-input" name="delivery-option-${
+                <input type="radio" class="delivery-option-input js-delivery-option-input" data-product-id='${
                   matchingitem.id
-                }">
+                }'data-shipping-id='mid-${
+          matchingitem.id
+        }' name="delivery-option-${matchingitem.id}">
                 <div>
-                  <div class="delivery-option-date">
-                    Wednesday, June 15
+                  <div class="delivery-option-date delivery-option-date-mid-${
+                    matchingitem.id
+                  }">
+                    ${setDate(3)}
                   </div>
                   <div class="delivery-option-price">
                     $4.99 - Shipping
@@ -83,12 +101,16 @@ function renderCheckout() {
               </div>
 
               <div class="delivery-option">
-                <input type="radio" class="delivery-option-input" name="delivery-option-${
-                  product.id
-                }">
+                <input type="radio" class="delivery-option-input js-delivery-option-input" data-product-id='${
+                  matchingitem.id
+                }' data-shipping-id='high-${
+          matchingitem.id
+        }' name="delivery-option-${product.id}">
                 <div>
-                  <div class="delivery-option-date">
-                    Monday, June 13
+                  <div class="delivery-option-date delivery-option-date-high-${
+                    matchingitem.id
+                  }">
+                    ${setDate(1)}
                   </div>
                   <div class="delivery-option-price">
                     $9.99 - Shipping
@@ -199,5 +221,26 @@ document.querySelectorAll(".js-update-quantity").forEach((button) => {
     } else {
       updateItemQuantity();
     }
+  });
+});
+
+document.querySelectorAll(".delivery-option-input").forEach((radioBtn) => {
+  const { shippingId } = radioBtn.dataset;
+  const { productId } = radioBtn.dataset;
+
+  radioBtn.addEventListener("click", () => {
+    console.log(shippingId);
+    console.log(productId);
+
+    const selectedDelivery = document.querySelector(
+      `.js-delivery-date-${productId}`
+    );
+
+    const deliveryDate = document.querySelector(
+      `.delivery-option-date-${shippingId}`
+    );
+
+    console.log(deliveryDate.innerHTML);
+    selectedDelivery.innerHTML = `Delivery date: ${deliveryDate.innerHTML}`;
   });
 });

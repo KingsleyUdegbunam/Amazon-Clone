@@ -8,7 +8,6 @@ export let cart = JSON.parse(localStorage.getItem("cart")) || [
     quantity: 1,
   },
 ];
-console.log(JSON.parse(localStorage.getItem("cart")));
 
 export function addToCart(productId) {
   let matchingItem;
@@ -26,13 +25,10 @@ export function addToCart(productId) {
       productId,
       quantity: 1,
     };
-
     cart.push(product);
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
-
-  //console.log(localStorage.getItem("cart"));
 }
 
 export function removeItemFromCart(productId) {
@@ -46,4 +42,16 @@ export function removeItemFromCart(productId) {
 
   cart = newCart;
   localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+export function calculateCartQuantity() {
+  //Accumulator to hold the total number of quantity in cart.
+
+  let cartQuantity = 0;
+
+  cart.forEach((cartItem) => {
+    cartQuantity += cartItem.quantity;
+  });
+
+  return cartQuantity;
 }
