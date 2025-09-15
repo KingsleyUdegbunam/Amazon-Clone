@@ -10,9 +10,8 @@ import { formatCurrency } from "./utils/money.js";
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 import { deliveryOptions } from "../data/deliveryOptions.js";
 
-const productSummaryContainer = document.querySelector(".js-order-summary");
-
 function renderCheckout() {
+  const productSummaryContainer = document.querySelector(".js-order-summary");
   let cartSummaryHTML = "";
 
   cart.forEach((cartItem) => {
@@ -117,108 +116,109 @@ function renderCheckout() {
   });
 
   productSummaryContainer.innerHTML = cartSummaryHTML;
-}
 
-renderCheckout();
+  const quantityViewElem = document.querySelector(".js-cart-item-num");
 
-const quantityViewElem = document.querySelector(".js-cart-item-num");
-
-function totalQuantity() {
-  quantityViewElem.innerHTML = `${calculateCartQuantity()} Items`;
-}
-
-totalQuantity();
-
-document.querySelectorAll(".js-delete-quantity-link").forEach((button) => {
-  button.addEventListener("click", () => {
-    const productId = button.dataset.productId;
-
-    removeItemFromCart(productId);
-    totalQuantity();
-
-    document.querySelector(`.js-cart-item-container-${productId}`).remove();
-  });
-});
-
-document.querySelectorAll(".js-update-quantity").forEach((button) => {
-  const { productId } = button.dataset;
-  let updateToggle;
-
-  function updateItemQuantity() {
-    const inputSpace = document.querySelector(
-      `.js-update-quantity-input-${productId}`
-    );
-
-    const newValue = Number(inputSpace.value);
-
-    if (newValue === 0) {
-      removeItemFromCart(productId);
-      document.querySelector(`.js-cart-item-container-${productId}`).remove();
-      totalQuantity();
-      console.log("hey");
-    } else if (newValue < 0 || newValue > 100) {
-      alert("Error. Cart quantity must be between 0 and 1000");
-    } else {
-      document.querySelector(
-        `.js-quantity-label-${productId}`
-      ).innerHTML = `${newValue}`;
-
-      button.innerHTML = "Update";
-
-      updateToggle = false;
-
-      cart.forEach((cartItem) => {
-        if (cartItem.productId === productId) {
-          cartItem.quantity = newValue;
-
-          localStorage.setItem("cart", JSON.stringify(cart));
-          console.log("Updated item quantity");
-          console.log(cartItem.quantity);
-          totalQuantity();
-        }
-      });
-    }
+  function totalQuantity() {
+    quantityViewElem.innerHTML = `${calculateCartQuantity()} Items`;
   }
 
-  button.addEventListener("click", () => {
-    if (!updateToggle) {
-      const value = Number(
-        document.querySelector(`.js-quantity-label-${productId}`).textContent
-      );
-      console.log(value);
-      console.log(typeof value);
+  totalQuantity();
 
-      document.querySelector(
-        `.js-quantity-label-${productId}`
-      ).innerHTML = `<input type = 'number' value='${value}' class='update-quantity-input js-update-quantity-input-${productId}'>`;
+  document.querySelectorAll(".js-delete-quantity-link").forEach((button) => {
+    button.addEventListener("click", () => {
+      const productId = button.dataset.productId;
 
-      button.innerHTML = "Save";
+      removeItemFromCart(productId);
+      totalQuantity();
 
-      updateToggle = true;
+      document.querySelector(`.js-cart-item-container-${productId}`).remove();
+    });
+  });
+
+  document.querySelectorAll(".js-update-quantity").forEach((button) => {
+    const { productId } = button.dataset;
+    let updateToggle;
+
+    function updateItemQuantity() {
       const inputSpace = document.querySelector(
         `.js-update-quantity-input-${productId}`
       );
 
-      if (inputSpace) {
-        inputSpace.addEventListener("keydown", (event) => {
-          if (event.key === "Enter") {
-            updateItemQuantity();
-            console.log("hey");
+      const newValue = Number(inputSpace.value);
+
+      if (newValue === 0) {
+        removeItemFromCart(productId);
+        document.querySelector(`.js-cart-item-container-${productId}`).remove();
+        totalQuantity();
+        console.log("hey");
+      } else if (newValue < 0 || newValue > 100) {
+        alert("Error. Cart quantity must be between 0 and 1000");
+      } else {
+        document.querySelector(
+          `.js-quantity-label-${productId}`
+        ).innerHTML = `${newValue}`;
+
+        button.innerHTML = "Update";
+
+        updateToggle = false;
+
+        cart.forEach((cartItem) => {
+          if (cartItem.productId === productId) {
+            cartItem.quantity = newValue;
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+            console.log("Updated item quantity");
+            console.log(cartItem.quantity);
+            totalQuantity();
           }
         });
       }
-    } else {
-      updateItemQuantity();
     }
-  });
-});
 
-document.querySelectorAll(".js-delivery-option").forEach((element) => {
-  element.addEventListener("click", () => {
-    const { deliveryOptionId, productId } = element.dataset;
+    button.addEventListener("click", () => {
+      if (!updateToggle) {
+        const value = Number(
+          document.querySelector(`.js-quantity-label-${productId}`).textContent
+        );
+        console.log(value);
+        console.log(typeof value);
 
-    console.log(deliveryOptionId);
-    console.log(productId);
-    updateDeliveryOptionId(productId, deliveryOptionId);
+        document.querySelector(
+          `.js-quantity-label-${productId}`
+        ).innerHTML = `<input type = 'number' value='${value}' class='update-quantity-input js-update-quantity-input-${productId}'>`;
+
+        button.innerHTML = "Save";
+
+        updateToggle = true;
+        const inputSpace = document.querySelector(
+          `.js-update-quantity-input-${productId}`
+        );
+
+        if (inputSpace) {
+          inputSpace.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+              updateItemQuantity();
+              console.log("hey");
+            }
+          });
+        }
+      } else {
+        updateItemQuantity();
+      }
+    });
   });
-});
+
+  document.querySelectorAll(".js-delivery-option").forEach((element) => {
+    element.addEventListener("click", () => {
+      const { deliveryOptionId, productId } = element.dataset;
+
+      console.log(deliveryOptionId);
+      console.log(productId);
+      updateDeliveryOptionId(productId, deliveryOptionId);
+      renderCheckout();
+    });
+  });
+}
+
+renderCheckout();
