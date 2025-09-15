@@ -2,6 +2,8 @@ import {
   cart,
   removeItemFromCart,
   calculateCartQuantity,
+  saveToStorage,
+  updateDeliveryOptionId,
 } from "../data/cart.js";
 import { products } from "../data/products.js";
 import { formatCurrency } from "./utils/money.js";
@@ -33,7 +35,7 @@ function renderCheckout() {
 
         const html = `
       <div class="cart-item-container js-cart-item-container-${product.id}">
-          <div class="delivery-date js-delivery-date">
+          <div class="delivery-date js-delivery-date-${product.id}">
             Delivery date: ${dateString}
           </div>
 
@@ -94,8 +96,8 @@ function renderCheckout() {
               : `$${formatCurrency(deliveryOption.priceCents)} -`;
 
           html += `
-          <div class="delivery-option">
-                <input type="radio" ${isChecked} class="delivery-option-input" name="delivery-option-${matchingItem.id}">
+          <div class="delivery-option js-delivery-option" data-product-id='${matchingItem.id}' data-delivery-option-id='${deliveryOption.id}'>
+                <input type="radio" ${isChecked} class="delivery-option-input js-delivery-option-input" name="delivery-option-${matchingItem.id}" >
                 <div>
                   <div class="delivery-option-date">
                     ${dateString}
@@ -105,14 +107,12 @@ function renderCheckout() {
                   </div>
                 </div>
               </div>
+
           `;
         });
 
         return html;
       }
-
-      /*  renderDeliveryOption(matchingItem);
-      console.log(matchingItem); */
     });
   });
 
@@ -210,5 +210,15 @@ document.querySelectorAll(".js-update-quantity").forEach((button) => {
     } else {
       updateItemQuantity();
     }
+  });
+});
+
+document.querySelectorAll(".js-delivery-option").forEach((element) => {
+  element.addEventListener("click", () => {
+    const { deliveryOptionId, productId } = element.dataset;
+
+    console.log(deliveryOptionId);
+    console.log(productId);
+    updateDeliveryOptionId(productId, deliveryOptionId);
   });
 });

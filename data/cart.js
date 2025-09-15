@@ -11,7 +11,7 @@ export let cart = JSON.parse(localStorage.getItem("cart")) || [
   },
 ];
 
-function saveToStorage() {
+export function saveToStorage() {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
@@ -61,4 +61,17 @@ export function calculateCartQuantity() {
   });
 
   return cartQuantity;
+}
+
+export function updateDeliveryOptionId(productId, deliveryOptionId) {
+  let matchingItem = "";
+  let i = 0;
+  cart.forEach((cartItem) => {
+    if (productId === cartItem.productId) {
+      matchingItem = cartItem;
+    }
+  });
+
+  matchingItem.deliveryOptionId = deliveryOptionId;
+  saveToStorage();
 }
