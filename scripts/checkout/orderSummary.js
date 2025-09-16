@@ -132,9 +132,8 @@ export function renderCheckout() {
       removeItemFromCart(productId);
       totalQuantity();
 
-      document.querySelector(`.js-cart-item-container-${productId}`).remove();
-
       renderPaymentSummary();
+      renderCheckout();
     });
   });
 
