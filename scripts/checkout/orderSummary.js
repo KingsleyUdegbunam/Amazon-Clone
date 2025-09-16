@@ -8,6 +8,7 @@ import { products } from "../../data/products.js";
 import { formatCurrency } from "../utils/money.js";
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 import { deliveryOptions } from "../../data/deliveryOptions.js";
+import { renderPaymentSummary } from "./paymentSummary.js";
 
 export function renderCheckout() {
   const productSummaryContainer = document.querySelector(".js-order-summary");
@@ -132,6 +133,8 @@ export function renderCheckout() {
       totalQuantity();
 
       document.querySelector(`.js-cart-item-container-${productId}`).remove();
+
+      renderPaymentSummary();
     });
   });
 
@@ -216,6 +219,8 @@ export function renderCheckout() {
       console.log(productId);
       updateDeliveryOptionId(productId, deliveryOptionId);
       renderCheckout();
+
+      renderPaymentSummary();
     });
   });
 }
