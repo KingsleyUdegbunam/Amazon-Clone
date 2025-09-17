@@ -7,7 +7,11 @@ import {
 import { products } from "../../data/products.js";
 import { formatCurrency } from "../utils/money.js";
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
-import { deliveryOptions } from "../../data/deliveryOptions.js";
+import {
+  deliveryOptions,
+  getDeliveryOption,
+  calculateDeliveryDate,
+} from "../../data/deliveryOptions.js";
 import { renderPaymentSummary } from "./paymentSummary.js";
 
 export function renderCheckout() {
@@ -22,16 +26,9 @@ export function renderCheckout() {
         matchingItem = product;
 
         const deliveryOptionId = cartItem.deliveryOptionId;
-        let dateString;
+        const deliveryOption = getDeliveryOption(deliveryOptionId);
 
-        deliveryOptions.forEach((deliveryOption) => {
-          if (deliveryOption.id === deliveryOptionId) {
-            const today = dayjs();
-            const deliveryDate = today.add(deliveryOption.deliveryDays, "days");
-            dateString = deliveryDate.format("dddd, MMMM D");
-          }
-        });
-
+        const dateString = calculateDeliveryDate(deliveryOption);
         const html = `
       <div class="cart-item-container js-cart-item-container-${product.id}">
           <div class="delivery-date js-delivery-date-${product.id}">
@@ -82,9 +79,7 @@ export function renderCheckout() {
         let html = "";
 
         deliveryOptions.forEach((deliveryOption) => {
-          const today = dayjs();
-          const deliveryDate = today.add(deliveryOption.deliveryDays, "days");
-          const dateString = deliveryDate.format("dddd, MMMM D");
+          const dateString = calculateDeliveryDate(deliveryOption);
 
           const isChecked =
             deliveryOption.id === cartItem.deliveryOptionId ? "checked" : "";
