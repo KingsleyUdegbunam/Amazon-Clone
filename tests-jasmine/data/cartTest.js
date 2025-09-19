@@ -15,8 +15,6 @@ describe("Test suite: addToCart", () => {
     spyOn(localStorage, "setItem");
     addToCart("c2a82c5e-aff4-435f-9975-517cfaba2ece");
 
-    console.log(cart);
-
     expect(cart[0].quantity).toEqual(2);
     expect(cart.length).toEqual(1);
     expect(cart).toEqual([

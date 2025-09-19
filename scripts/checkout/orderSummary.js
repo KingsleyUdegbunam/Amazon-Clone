@@ -14,7 +14,7 @@ import {
 } from "../../data/deliveryOptions.js";
 import { renderPaymentSummary } from "./paymentSummary.js";
 
-export function renderCheckout() {
+export function renderOrderSummary() {
   const productSummaryContainer = document.querySelector(".js-order-summary");
   let cartSummaryHTML = "";
 
@@ -30,7 +30,9 @@ export function renderCheckout() {
 
         const dateString = calculateDeliveryDate(deliveryOption);
         const html = `
-      <div class="cart-item-container js-cart-item-container-${product.id}">
+      <div class="cart-item-container js-cart-item-container js-cart-item-container-${
+        product.id
+      }">
           <div class="delivery-date js-delivery-date-${product.id}">
             Delivery date: ${dateString}
           </div>
@@ -45,7 +47,9 @@ export function renderCheckout() {
               <div class="product-price">
                $${formatCurrency(matchingItem.priceCents)}
               </div>
-              <div class="product-quantity">
+              <div class="product-quantity js-product-quantity-${
+                matchingItem.id
+              }">
                 <span>
                   Quantity: <span class="quantity-label">${
                     cartItem.quantity
@@ -54,9 +58,9 @@ export function renderCheckout() {
                 <span class="update-quantity-link link-primary">
                   Update
                 </span>
-                <span class="delete-quantity-link js-delete-quantity-link link-primary" data-product-id = '${
+                <span class="delete-quantity-link js-delete-quantity-link link-primary js-delete-quantity-link-${
                   matchingItem.id
-                }'>
+                }" data-product-id = '${matchingItem.id}'>
                   Delete
                 </span>
               </div>
@@ -118,17 +122,18 @@ export function renderCheckout() {
     quantityViewElem.innerHTML = `${calculateCartQuantity()} Items`;
   }
 
-  totalQuantity();
+  //LOOK INTO MOVING THIS FUNCTION TO ITS OWN FILE
+  //totalQuantity();
 
   document.querySelectorAll(".js-delete-quantity-link").forEach((button) => {
     button.addEventListener("click", () => {
       const productId = button.dataset.productId;
 
       removeItemFromCart(productId);
-      totalQuantity();
+      //totalQuantity();
 
       renderPaymentSummary();
-      renderCheckout();
+      renderOrderSummary();
     });
   });
 
@@ -209,10 +214,10 @@ export function renderCheckout() {
     element.addEventListener("click", () => {
       const { deliveryOptionId, productId } = element.dataset;
 
-      console.log(deliveryOptionId);
-      console.log(productId);
+      /*  console.log(deliveryOptionId);
+      console.log(productId); */
       updateDeliveryOptionId(productId, deliveryOptionId);
-      renderCheckout();
+      renderOrderSummary();
 
       renderPaymentSummary();
     });
