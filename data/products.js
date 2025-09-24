@@ -53,6 +53,57 @@ class Clothing extends Product {
     </a>`;
   }
 }
+
+/* const date = new Date();
+
+console.log(date.toLocaleDateString());
+console.log(this); 
+
+const object2 = {
+  a: 1,
+  b: this.a,
+};
+*/
+
+/*
+function logThis() {
+  console.log(this);
+}
+
+function addToObject(param, value) {
+  this[param] = value;
+  console.log(this);
+}
+
+addToObject.call({ name: "Kingsley", age: 21 }, "height", "84mm");
+
+logThis();
+logThis.call("hello");
+
+const object3 = {
+  method: () => {
+    console.log(this);
+  },
+};
+
+object3.method();
+
+const object4 = {
+  regular: function () {
+    console.log("regular = ", this);
+    const arrow = () => {
+      console.log("arrow = ", this);
+    };
+    arrow();
+  },
+  arrow: () => {
+    console.log(this);
+  },
+};
+object4.regular();
+object4.arrow();
+*/
+
 export const products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
@@ -531,4 +582,4 @@ export const products = [
   return new Product(productDetails);
 });
 
-console.log(products);
+//console.log(products);
