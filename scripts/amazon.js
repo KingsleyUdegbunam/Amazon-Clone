@@ -1,10 +1,13 @@
 import { cart, addToCart, calculateCartQuantity } from "../data/cart.js ";
-import { products } from "../data/products.js";
+import { products, loadProducts } from "../data/products.js";
 
-let productsHTML = "";
+loadProducts(renderProductGrid);
 
-products.forEach((product) => {
-  productsHTML += `
+function renderProductGrid() {
+  let productsHTML = "";
+
+  products.forEach((product) => {
+    productsHTML += `
   <div class="product-container">
         <div class="product-image-container">
           <img class="product-image" src="${product.image}">
@@ -56,10 +59,11 @@ products.forEach((product) => {
           Add to Cart
         </button>
       </div>`;
-});
-const productsHolderElem = document.querySelector(".js-product-grid");
-if (productsHolderElem) {
-  productsHolderElem.innerHTML = productsHTML;
+  });
+  const productsHolderElem = document.querySelector(".js-product-grid");
+  if (productsHolderElem) {
+    productsHolderElem.innerHTML = productsHTML;
+  }
 }
 //This element is what holds the number of product in the cart
 const cartQuantityElem = document.querySelector(".js-cart-quantity");

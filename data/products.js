@@ -70,8 +70,31 @@ export class Appliance extends Product {
     `;
   }
 }
+export let products = [];
 
-export const products = [
+export function loadProducts(fun) {
+  const xhr = new XMLHttpRequest();
+
+  xhr.addEventListener("load", () => {
+    products = JSON.parse(xhr.response).map((productDetail) => {
+      if (productDetail.type === "clothing") {
+        return new Clothing(productDetail);
+      }
+      if (productDetail.type === "appliance") {
+        return new Appliance(productDetail);
+      }
+      return new Product(productDetail);
+    });
+
+    //console.log("load product");
+    fun();
+  });
+
+  xhr.open("GET", "https://supersimplebackend.dev/products");
+  xhr.send();
+}
+
+/* export const products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
     image: "images/products/athletic-cotton-socks-6-pairs.jpg",
@@ -565,4 +588,4 @@ export const products = [
   return new Product(productDetails);
 });
 
-console.log(products);
+console.log(products); */
