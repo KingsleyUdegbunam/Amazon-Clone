@@ -40,7 +40,7 @@ products.forEach((product) => {
           </select>
         </div>
 
-        ${product.extraInfoHTNL()}
+        ${product.extraInfoHTML()}
 
         <div class="product-spacer"></div>
 
