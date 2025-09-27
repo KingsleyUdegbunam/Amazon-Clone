@@ -64,20 +64,21 @@ function renderProductGrid() {
   if (productsHolderElem) {
     productsHolderElem.innerHTML = productsHTML;
   }
-}
-//This element is what holds the number of product in the cart
-const cartQuantityElem = document.querySelector(".js-cart-quantity");
 
-if (cartQuantityElem) {
-  cartQuantityElem.innerHTML = calculateCartQuantity();
-}
+  //This element is what holds the number of product in the cart
+  const cartQuantityElem = document.querySelector(".js-cart-quantity");
 
-document.querySelectorAll(".js-add-to-cart-button").forEach((button) => {
-  button.addEventListener("click", () => {
-    const { productId } = button.dataset;
-
-    addToCart(productId);
-
+  if (cartQuantityElem) {
     cartQuantityElem.innerHTML = calculateCartQuantity();
+  }
+
+  document.querySelectorAll(".js-add-to-cart-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const { productId } = button.dataset;
+
+      addToCart(productId);
+
+      cartQuantityElem.innerHTML = calculateCartQuantity();
+    });
   });
-});
+}
