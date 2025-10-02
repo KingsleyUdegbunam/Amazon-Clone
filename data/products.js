@@ -86,7 +86,7 @@ export function loadProducts(fun) {
       return new Product(productDetail);
     });
 
-    //console.log("load product");
+    console.log("load product");
     fun();
   });
 
