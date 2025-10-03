@@ -5,16 +5,24 @@ import { loadProductsFetch } from "../data/products.js";
 //import "../data/backend/backend-practice.js";
 
 async function loadPage() {
-  await loadProductsFetch();
-  const value = await new Promise((resolve) => {
-    loadCart(() => {
-      resolve("value3");
+  try {
+    //throw "error oo!";
+    await loadProductsFetch();
+    const value = await new Promise((resolve, reject) => {
+      //throw "errortt";
+      loadCart(() => {
+        // reject("error reject");
+        resolve("value3");
+      });
     });
-  });
+
+    console.log(value);
+  } catch (error) {
+    console.log("Unexpected error. Try again later.");
+    console.log(error);
+  }
   renderOrderSummary();
   renderPaymentSummary();
-
-  console.log(value);
 }
 
 loadPage();
