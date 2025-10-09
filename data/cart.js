@@ -2,6 +2,20 @@ export let cart;
 
 loadCartFromStorage();
 
+export function checkProductQuantity(productId) {
+  let productQuantity = 0;
+  cart.forEach((product) => {
+    if (product.productId === productId) {
+      productQuantity = product.quantity;
+    }
+  });
+
+  return productQuantity;
+}
+
+//const quant = checkProductQuantity("e43638ce-6aa0-4b85-b27f-e1d07eb678c6");
+//console.log(quant);
+
 export function loadCartFromStorage() {
   cart = JSON.parse(localStorage.getItem("cart")) || [
     {
@@ -79,6 +93,12 @@ export function updateDeliveryOptionId(productId, deliveryOptionId) {
 
   matchingItem.deliveryOptionId = deliveryOptionId;
   saveToStorage();
+}
+
+export async function loadCartFetch() {
+  const response = await fetch("https://supersimplebackend.dev/cart");
+  const cart = await response.text();
+  console.log("This is", cart);
 }
 
 export function loadCart(fun) {

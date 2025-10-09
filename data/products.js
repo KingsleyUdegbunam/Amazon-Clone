@@ -12,6 +12,15 @@ export function getProduct(productId) {
   return matchingProduct;
 }
 
+/* async function findProduct() {
+  await loadProductsFetch();
+  console.log(getProduct("15b6fc6f-327a-4ec4-896f-486349e85a3d"));
+} */
+
+//findProduct();
+
+//getProduct("15b6fc6f-327a-4ec4-896f-486349e85a3d");
+
 export class Product {
   id;
   image;
@@ -78,7 +87,6 @@ export function loadProductsFetch() {
       return response.json();
     })
     .then((data) => {
-      //console.log(data);
       products = data.map((productDetail) => {
         if (productDetail.type === "clothing") {
           return new Clothing(productDetail);
@@ -93,11 +101,6 @@ export function loadProductsFetch() {
     });
   return promise;
 }
-/* 
-loadProductsFetch().then(() => {
-  console.log("next step");
-});
- */
 
 export function loadProducts(fun) {
   const xhr = new XMLHttpRequest();
