@@ -91,18 +91,13 @@ export function renderPaymentSummary() {
 
         const order = await response.json();
         console.log(order);
-
         addOrder(order);
 
-        console.log(window.location);
+        localStorage.removeItem("cart");
+
         window.location.href = "orders.html";
-        //window.location.href = "orders.html";
       } catch (error) {
         console.log("Unexpected error. Please try again later.");
       }
     });
 }
-
-/* document.querySelector(".js-place-order").addEventListener("click", () => {
-  console.log("clicked");
-}); */

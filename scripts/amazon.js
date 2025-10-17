@@ -1,8 +1,63 @@
 import { cart, addToCart, calculateCartQuantity } from "../data/cart.js ";
-import { products, loadProducts } from "../data/products.js";
+import {
+  products,
+  loadProducts,
+  loadProductsFetch,
+  asyncloadProductsFetch,
+} from "../data/products.js";
 
-loadProducts(renderProductGrid);
+//render page default
+async function renderPage(param) {
+  await asyncloadProductsFetch(param);
+  renderProductGrid();
+}
 
+const searchBar = document.querySelector(".js-search-bar");
+const searchBtn = document.querySelector(".js-search-btn");
+
+function searchItem() {
+  const baseAdress = "amazon.html";
+  const searchValue = searchBar.value;
+  console.log(searchValue);
+  if (searchValue.trim()) {
+    window.location.assign(
+      `${baseAdress}?search=${encodeURIComponent(searchValue)}`
+    );
+    searchBar.value = searchValue;
+  }
+}
+
+//Search product using the search button and enter btn
+searchBtn.addEventListener("click", () => {
+  searchItem();
+});
+
+searchBar.addEventListener("keypress", (event) => {
+  if (event.key === "Enter") {
+    //searchItem();
+    searchBtn.click();
+  }
+});
+
+async function getSearchInput() {
+  const url = new URL(window.location.href);
+  const param = url.searchParams.get("search");
+
+  return param;
+}
+
+if (window.location.search) {
+  await renderPage(getSearchInput);
+  renderProductGrid();
+} else {
+  renderPage();
+}
+
+//retaining value
+const url = new URL(window.location.href);
+//  const searchParam =
+
+//renderPage Display
 function renderProductGrid() {
   let productsHTML = "";
 
@@ -29,7 +84,7 @@ function renderProductGrid() {
         </div>
 
         <div class="product-quantity-container">
-          <select>
+          <select class='js-select' data-product-id=${product.id}>
             <option selected value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -47,7 +102,7 @@ function renderProductGrid() {
 
         <div class="product-spacer"></div>
 
-        <div class="added-to-cart">
+        <div class="added-to-cart" data-product-id=${product.id}>
           <img src="images/icons/checkmark.png">
           Added
         </div>
@@ -72,13 +127,37 @@ function renderProductGrid() {
     cartQuantityElem.innerHTML = calculateCartQuantity();
   }
 
+  //console.log(document.querySelectorAll(".added-to-cart"));
   document.querySelectorAll(".js-add-to-cart-button").forEach((button) => {
     button.addEventListener("click", () => {
       const { productId } = button.dataset;
+      //const productId = button.dataset.productId;
+      //console.log(button.dataset);
+      const selector = document.querySelector(
+        `[data-product-id='${productId}']`
+      );
+      let value;
 
-      addToCart(productId);
+      document.querySelectorAll(".js-select").forEach((selectBtn) => {
+        const productIdent = selectBtn.dataset.productId;
+
+        if (productId === productIdent) {
+          value = Number(selectBtn.value);
+        }
+      });
+
+      /* const value = Number(selector.value);
+      console.log(selector);
+      console.log(typeof value);*/
+
+      addToCart(productId, value);
 
       cartQuantityElem.innerHTML = calculateCartQuantity();
     });
   });
 }
+
+//loadProducts(renderProductGrid);
+
+/* await asyncloadProductsFetch();
+renderProductGrid(); */

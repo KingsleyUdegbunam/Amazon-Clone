@@ -1,20 +1,28 @@
 import { orders } from "../data/orders.js";
 import { formatCurrency } from "../scripts/utils/money.js";
 import { getProduct, loadProductsFetch } from "../data/products.js";
-import { checkProductQuantity } from "../data/cart.js";
+import { checkProductQuantity, calculateCartQuantity } from "../data/cart.js";
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
+import { addToCart } from "../data/cart.js";
 
-console.log(orders);
+//console.log(orders);
+function resetCart() {}
+
 async function renderOrderPage() {
+  localStorage.removeItem("cart");
   await loadProductsFetch();
 
   const orderPlaceHolder = document.querySelector(".js-orders-container");
-  //console.log(orderPlaceHolder.innerHTML);
   let orderHTML = "";
+
+  document.querySelector(".js-cart-quantity").innerHTML =
+    calculateCartQuantity();
 
   orders.forEach((order) => {
     let orderedProducts = "";
+    console.log(order);
 
+    function orderDay() {}
     const orderedDay = dayjs(order.orderTime).format("MMMM D");
 
     //const getProduct(order.id);
@@ -24,11 +32,10 @@ async function renderOrderPage() {
       //handledProduct gives us access the product properties like image and name
       const handledProduct = getProduct(productId);
 
-      const quant = checkProductQuantity(productId);
+      const quant = product.quantity;
 
       const deliveryDay = product.estimatedDeliveryTime;
       const readableDeliveryDay = dayjs(deliveryDay).format("MMMM D");
-      console.log(readableDeliveryDay);
 
       const html = `
       
@@ -47,15 +54,15 @@ async function renderOrderPage() {
               <div class="product-quantity">
                 Quantity: ${quant}
               </div>
-              <button class="buy-again-button button-primary">
+              <button class="buy-again-button button-primary js-buy-again-btn" data-product-id = ${productId}>
                 <img class="buy-again-icon" src="images/icons/buy-again.png">
                 <span class="buy-again-message">Buy it again</span>
               </button>
             </div>
 
             <div class="product-actions">
-              <a href="tracking.html?orderId=123&productId=456">
-                <button class="track-package-button button-secondary">
+              <a href="tracking.html?orderId=${order.id}&productId=${product.productId}">
+                <button class="track-package-button button-secondary js-tracking-btn">
                   Track package
                 </button>
               </a>
@@ -100,7 +107,29 @@ async function renderOrderPage() {
   //console.log(orderHTML);
   orderPlaceHolder.innerHTML = orderHTML;
 
-  console.log(new Date().toISOString());
+  //console.log(new Date().toISOString());
 }
 
-renderOrderPage();
+renderOrderPage(resetCart).then(() => {
+  document.querySelectorAll(".js-buy-again-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      const productId = button.dataset.productId;
+
+      addToCart(productId);
+
+      document.querySelector(".js-cart-quantity").innerHTML =
+        calculateCartQuantity();
+
+      //const product = getProduct(productId);
+    });
+  });
+
+  document.querySelectorAll(".js-tracking-btn").forEach((trackBtn) => {
+    trackBtn.addEventListener("click", () => {
+      /* console.log("hello");
+
+      const url = new URL(window.location.href);
+      console.log(url); */
+    });
+  });
+});

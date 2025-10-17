@@ -81,7 +81,7 @@ export class Appliance extends Product {
 }
 export let products = [];
 
-export function loadProductsFetch() {
+export function loadProductsFetch(param) {
   const promise = fetch("https://supersimplebackend.dev/products")
     .then((response) => {
       return response.json();
@@ -100,6 +100,51 @@ export function loadProductsFetch() {
       console.log("Unexpected error. Please, try again later.");
     });
   return promise;
+}
+
+export async function asyncloadProductsFetch(param) {
+  try {
+    const response = await fetch("https://supersimplebackend.dev/products");
+    const data = await response.json();
+
+    console.log(data);
+
+    products = data.map((productDetail) => {
+      if (productDetail.type === "clothing") {
+        return new Clothing(productDetail);
+      }
+      return new Product(productDetail);
+    });
+
+    if (param) {
+      const filteredProducts = [];
+      const value = await param();
+      const searchTerm = await value.toLowerCase();
+      //console.log(value);
+      /* filteredProducts = products.filter((product) => {
+        product.name.toLowerCase().includes(searchTerm);
+      }); */
+
+      products.forEach((product) => {
+        if (product.name.toLowerCase().includes(searchTerm)) {
+          filteredProducts.push(product);
+        }
+      });
+      console.log(filteredProducts);
+
+      if (filteredProducts.length > 0) {
+        products = filteredProducts;
+      } else {
+        alert("Sorry, we don't have this item at the moment.");
+        window.location.href = "amazon.html";
+      }
+    }
+
+    console.log("load productssss");
+  } catch (error) {
+    console.log("Unexpected error. Please, try again later.");
+    console.log(error);
+  }
 }
 
 export function loadProducts(fun) {
