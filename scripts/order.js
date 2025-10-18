@@ -9,7 +9,7 @@ import { addToCart } from "../data/cart.js";
 function resetCart() {}
 
 async function renderOrderPage() {
-  localStorage.removeItem("cart");
+  // localStorage.removeItem("cart");
   await loadProductsFetch();
 
   const orderPlaceHolder = document.querySelector(".js-orders-container");

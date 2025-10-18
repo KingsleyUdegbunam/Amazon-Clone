@@ -3,8 +3,9 @@ import {
   removeItemFromCart,
   calculateCartQuantity,
   updateDeliveryOptionId,
+  updateProductQuantity,
 } from "../../data/cart.js";
-import { products } from "../../data/products.js";
+import { getProduct, products } from "../../data/products.js";
 import { formatCurrency } from "../utils/money.js";
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 import {
@@ -151,16 +152,22 @@ export function renderOrderSummary() {
       renderOrderSummary();
     });
   });
+  function updateItemQuantity(productId, value) {
+    updateProductQuantity(productId, value);
+    renderOrderSummary();
+    renderPaymentSummary();
+  }
+  //Make the 'update' btn functional
 
-  const updadteToggles = {};
-
+  const updateToggles = {};
   document.querySelectorAll(".js-update-quantity").forEach((button) => {
     button.addEventListener("click", () => {
       const { productId } = button.dataset;
 
       //toggle the curernt state(true/false)
-      updadteToggles[productId] = !updadteToggles[productId];
+      updateToggles[productId] = !updateToggles[productId];
 
+      //Getting required HTML element for manipulation.
       const updateField = document.querySelector(
         `.quantity-input-${productId}`
       );
@@ -173,20 +180,35 @@ export function renderOrderSummary() {
         `.js-item-quantity-${productId}`
       ).textContent;
 
-      if (updadteToggles[productId]) {
+      if (updateToggles[productId]) {
         updateField.classList.add("quantity-input-active");
         currentQuantityElem.classList.add("toggle-off-quantity-label");
 
         console.log(currentQuantityValue);
         updateField.value = currentQuantityValue;
 
-        console.log(currentQuantityValue);
+        updateField.addEventListener("keypress", (event) => {
+          if (event.key === "Enter") {
+            const newValue = updateField.value;
+            updateItemQuantity(productId, newValue);
+          }
+        });
+
+        // console.log(currentQuantityValue);
       } else {
         const value = updateField.value;
         currentQuantityElem.textContent = value;
 
+        updateItemQuantity(productId, value);
+
         updateField.classList.remove("quantity-input-active");
         currentQuantityElem.classList.remove("toggle-off-quantity-label");
+
+        console.log(cart);
+
+        /*    if (currentQuantityElem.textContent === 0) {
+          removeItemFromCart(productId);
+        } */
       }
     });
   });

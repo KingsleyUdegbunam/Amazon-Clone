@@ -13,8 +13,35 @@ export function checkProductQuantity(productId) {
   return productQuantity;
 }
 
-//const quant = checkProductQuantity("e43638ce-6aa0-4b85-b27f-e1d07eb678c6");
-//console.log(quant);
+export function findProduct(productId) {
+  let matchingItem;
+  cart.forEach((item) => {
+    if (item.productId === productId) {
+      matchingItem = item;
+    }
+  });
+
+  return matchingItem;
+}
+export function updateProductQuantity(productId, value) {
+  const product = findProduct(productId);
+
+  const newQuantity = Number(value);
+
+  if (newQuantity < 0) {
+    alert("item can not be less than 0");
+  } else if ((newQuantity > 0) & (newQuantity <= 100)) {
+    product.quantity = newQuantity;
+  } else if (newQuantity > 100) {
+    alert("Item's quantity cannot be greater than 100");
+  } else if (newQuantity === 0) {
+    removeItemFromCart(productId);
+  } else {
+    alert("Quantity must be a number.");
+  }
+
+  saveToStorage();
+}
 
 export function loadCartFromStorage() {
   cart =
