@@ -11,16 +11,16 @@ class Car {
   }
   displayInfo() {
     if (this.acceleration) {
-      console.log(
+      /*  console.log(
         `${this.#brand} ${this.#model} ${this.speed}km/h ${
           this.acceleration
         }m/s`
-      );
+      ); */
       return;
     }
-    console.log(
+    /*    console.log(
       `${this.#brand} ${this.#model} ${this.speed}km/h ${this.isTrunkOpen}`
-    );
+    ); */
   }
 
   go() {
@@ -74,8 +74,8 @@ car1.openTrunk();
 //car1.brake();
 car1.displayInfo();
 
-console.log(car1);
-console.log(tesla);
+//console.log(car1);
+//console.log(tesla);
 
 class RaceCar extends Car {
   acceleration;
@@ -104,5 +104,5 @@ const lastestCar = new RaceCar("McLaren", "F1", 20);
 lastestCar.go();
 lastestCar.go();
 
-console.log(lastestCar);
+//console.log(lastestCar);
 lastestCar.displayInfo();

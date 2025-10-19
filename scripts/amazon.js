@@ -46,6 +46,12 @@ async function getSearchInput() {
   return param;
 }
 
+console.log(window.location.search);
+if (window.location.search) {
+  const param = await getSearchInput();
+  searchBar.value = param;
+}
+
 if (window.location.search) {
   await renderPage(getSearchInput);
   renderProductGrid();
@@ -102,7 +108,9 @@ function renderProductGrid() {
 
         <div class="product-spacer"></div>
 
-        <div class="added-to-cart" data-product-id=${product.id}>
+        <div class="added-to-cart js-added-to-cart js-added-to-cart-${
+          product.id
+        }" data-product-id=${product.id}>
           <img src="images/icons/checkmark.png">
           Added
         </div>
@@ -127,15 +135,10 @@ function renderProductGrid() {
     cartQuantityElem.innerHTML = calculateCartQuantity();
   }
 
-  //console.log(document.querySelectorAll(".added-to-cart"));
   document.querySelectorAll(".js-add-to-cart-button").forEach((button) => {
     button.addEventListener("click", () => {
       const { productId } = button.dataset;
-      //const productId = button.dataset.productId;
-      //console.log(button.dataset);
-      const selector = document.querySelector(
-        `[data-product-id='${productId}']`
-      );
+
       let value;
 
       document.querySelectorAll(".js-select").forEach((selectBtn) => {
@@ -146,9 +149,21 @@ function renderProductGrid() {
         }
       });
 
-      /* const value = Number(selector.value);
-      console.log(selector);
-      console.log(typeof value);*/
+      document.querySelectorAll(".js-added-to-cart").forEach((notification) => {
+        const notifyId = notification.dataset.productId;
+
+        const notificationElem = document.querySelector(
+          `.js-added-to-cart-${productId}`
+        );
+
+        if (productId === notifyId) {
+          notificationElem.style.opacity = "1";
+
+          setTimeout(() => {
+            notificationElem.style.opacity = "0";
+          }, 2000);
+        }
+      });
 
       addToCart(productId, value);
 
@@ -156,8 +171,3 @@ function renderProductGrid() {
     });
   });
 }
-
-//loadProducts(renderProductGrid);
-
-/* await asyncloadProductsFetch();
-renderProductGrid(); */

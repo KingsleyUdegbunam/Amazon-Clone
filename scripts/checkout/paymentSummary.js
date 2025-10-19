@@ -93,7 +93,7 @@ export function renderPaymentSummary() {
         console.log(order);
         addOrder(order);
 
-        //localStorage.removeItem("cart");
+        localStorage.removeItem("cart");
 
         window.location.href = "orders.html";
       } catch (error) {

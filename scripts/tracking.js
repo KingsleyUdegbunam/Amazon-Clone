@@ -1,6 +1,10 @@
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 import { orders, getOrder } from "../data/orders.js";
 import { loadProductsFetch, getProduct } from "../data/products.js";
+import { calculateCartQuantity } from "../data/cart.js";
+
+const cartQuantityElem = document.querySelector(".js-cart-quantity");
+cartQuantityElem.innerHTML = calculateCartQuantity();
 
 const url = new URL(window.location.href);
 
